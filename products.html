@@ -169,27 +169,39 @@
       color: rgba(255,255,255,0.3);
     }
 
-    /* ── PRODUCT MODAL EXTRAS (reuses proj-modal styles) ── */
+    /* ── PRODUCT MODAL (media fills the left panel edge-to-edge) ── */
+    #prodModal .proj-modal-box { padding: 0; max-width: 940px; overflow: hidden; }
+    #prodModal .proj-modal-close { z-index: 5; background: rgba(8,8,8,0.6); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
     .prod-modal-grid {
       display: grid; grid-template-columns: 1fr 1.15fr;
-      gap: 2rem; align-items: start;
+      align-items: stretch; min-height: 440px;
     }
     .prod-modal-media {
-      border-radius: 14px; overflow: hidden;
-      border: 1px solid var(--gold-border);
-      background: #0c0c0c;
-      position: sticky; top: 0;
+      position: relative; background: #0c0c0c;
+      border-right: 1px solid var(--border);
     }
     .prod-modal-media video,
-    .prod-modal-media img { width: 100%; display: block; }
-    .prod-modal-media .deck-card-art {
-      aspect-ratio: 16 / 10; font-size: 3.4rem;
+    .prod-modal-media img {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%; object-fit: cover; display: block;
     }
-    .proj-modal-desc { margin-bottom: 1.4rem; }
-    .prod-modal-cta-row { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1.6rem; }
+    .prod-modal-media .deck-card-art {
+      position: absolute; inset: 0; font-size: 3.6rem;
+    }
+    .prod-modal-info {
+      padding: 3rem 2.8rem;
+      display: flex; flex-direction: column; justify-content: center;
+    }
+    .proj-modal-desc { margin-bottom: 0; }
+    .prod-modal-cta-row { display: flex; gap: 0.9rem; flex-wrap: wrap; margin-top: 2rem; }
     @media (max-width: 700px) {
-      .prod-modal-grid { grid-template-columns: 1fr; gap: 1.4rem; }
-      .prod-modal-media { position: static; }
+      .prod-modal-grid { grid-template-columns: 1fr; min-height: 0; }
+      .prod-modal-media {
+        position: relative; border-right: none;
+        border-bottom: 1px solid var(--border);
+        aspect-ratio: 16 / 9;
+      }
+      .prod-modal-info { padding: 1.6rem 1.5rem 2rem; }
     }
 
     /* ── FLAGSHIP ── */
@@ -462,7 +474,15 @@
 (function () {
   'use strict';
 
-  /* ══ PRODUCT DATA ══ */
+  /* ══ PRODUCT DATA ══
+     Every card and its popup are generated from this list. To launch a
+     new product with the full Digital Jungle treatment, fill in:
+       img:   'assets/<name>-poster.jpg'   poster/photo (card + popup fallback)
+       video: 'assets/<name>-card.mp4'     short muted preview clip (card + popup)
+       more:  '#<section-id>'              its detail section below → adds a Know More button
+       badge: 'Available Now', badgeCls: 'now'
+     Until then a product needs only icon + tint (themed art panel) and its
+     Register Interest CTA. No other code changes are required. ══ */
   var WA = 'https://wa.me/919108690590?text=';
   var PRODUCTS = [
     {
@@ -471,13 +491,13 @@
       icon: 'fa-solid fa-leaf',
       img: 'assets/digital-jungle-poster.jpg',
       video: 'assets/digital-jungle-card.mp4',
+      more: '#digital-jungle',
       title: 'Digital Jungle',
       card: 'Kids colour an animal on an iPad — and it comes alive on a giant LED jungle wall.',
       tag: 'Available Now — Flagship Product',
       desc: 'The attraction that turns every child into a creator. Kids colour an animal at an iPad station, tap once, and watch their exact creation walk, fly, or swim into a living digital jungle on the LED wall — with their name on screen. Parents film it, kids talk about it, and your event becomes the one they remember.',
       hl: ['Giant LED wall + iPad stations + software + crew — fully turnkey', 'Multiple stations in parallel keep the queue moving', 'Sponsor logos, branded sheets & custom animals', 'Runs continuously all day — no show timings'],
       cta: [
-        { label: 'Know More', kind: 'video' },
         { label: 'Enquire on WhatsApp', kind: 'wa', msg: "Hi BNP Group, I'm interested in the Digital Jungle for my event." }
       ]
     },
@@ -758,22 +778,25 @@
     mTag.textContent = p.tag;
     mTitle.textContent = p.title;
     mDesc.textContent = p.desc;
-    mHl.innerHTML = p.hl.map(function (h) {
-      return '<div class="proj-highlight-item"><i class="fa-solid fa-check"></i>' + h + '</div>';
-    }).join('');
+    mHl.style.display = 'none';
+
     mCta.innerHTML = '';
+    if (p.more) {
+      var knowBtn = document.createElement('a');
+      knowBtn.href = p.more;
+      knowBtn.className = 'nav-btn';
+      knowBtn.style.cssText = 'border-radius:100px;padding:0.85rem 2rem;margin-right:0;display:inline-flex;';
+      knowBtn.textContent = 'Know More';
+      knowBtn.addEventListener('click', function () { closeModal(); });
+      mCta.appendChild(knowBtn);
+    }
     p.cta.forEach(function (c) {
       var a = document.createElement('a');
-      if (c.kind === 'video') {
-        a.href = '#digital-jungle';
-        a.addEventListener('click', function () { closeModal(); });
-      } else {
-        a.href = WA + encodeURIComponent(c.msg);
-        a.target = '_blank';
-        a.rel = 'noopener';
-      }
+      a.href = WA + encodeURIComponent(c.msg);
+      a.target = '_blank';
+      a.rel = 'noopener';
       a.className = 'nav-btn';
-      a.style.cssText = 'border-radius:100px;padding:0.85rem 2rem;margin-right:0;display:inline-flex;';
+      a.style.cssText = 'border-radius:100px;padding:0.85rem 2rem;margin-right:0;display:inline-flex;' + (p.more ? 'background:transparent;border:1px solid var(--gold-border);color:var(--gold-bright);' : '');
       a.textContent = c.label;
       mCta.appendChild(a);
     });
