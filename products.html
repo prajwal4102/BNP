@@ -187,19 +187,23 @@
       margin: 3.5rem 0;
     }
     .exp-video-wrap video { display: block; width: 100%; height: auto; }
-    .exp-sound-btn {
-      position: absolute; bottom: 1.25rem; right: 1.25rem; z-index: 2;
-      display: flex; align-items: center; gap: 0.55rem;
-      background: rgba(8,8,8,0.75); border: 1px solid var(--gold-border);
-      color: var(--white); font-family: var(--body); font-size: 0.68rem;
-      font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
-      padding: 0.6rem 1.2rem; border-radius: 100px; cursor: pointer;
-      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-      transition: all 0.3s;
+    .exp-controls {
+      position: absolute; bottom: 1.1rem; right: 1.1rem; z-index: 2;
+      display: flex; gap: 0.5rem;
+      opacity: 1; transition: opacity 0.45s;
     }
-    .exp-sound-btn:hover { background: var(--gold-bright); color: var(--black); border-color: var(--gold-bright); }
-    .exp-sound-btn i { color: var(--gold-bright); transition: color 0.3s; }
-    .exp-sound-btn:hover i { color: var(--black); }
+    .exp-controls.faded { opacity: 0; pointer-events: none; }
+    .exp-ctrl {
+      width: 42px; height: 42px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(8,8,8,0.72); border: 1px solid var(--gold-border);
+      color: var(--gold-bright); font-size: 0.85rem; cursor: pointer;
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      transition: background 0.3s, color 0.3s, border-color 0.3s;
+    }
+    .exp-ctrl:hover { background: var(--gold-bright); color: var(--black); border-color: var(--gold-bright); }
+    .exp-video-wrap:fullscreen { border-radius: 0; border: none; margin: 0; display: flex; align-items: center; background: #000; }
+    .exp-video-wrap:fullscreen video { max-height: 100vh; }
     .exp-split { display: grid; grid-template-columns: 1.1fr 1fr; gap: 5rem; align-items: start; }
     .exp-tags { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 2rem; }
     .exp-tag {
@@ -278,7 +282,11 @@
         <source src="assets/digital-jungle.mp4" type="video/mp4" />
         Your browser does not support the video tag.
       </video>
-      <button class="exp-sound-btn" id="djSoundBtn" aria-label="Unmute video"><i class="fa-solid fa-volume-xmark" id="djSoundIcon"></i><span id="djSoundText">Sound On</span></button>
+      <div class="exp-controls" id="djControls">
+        <button class="exp-ctrl" id="djPlayBtn" aria-label="Pause video"><i class="fa-solid fa-pause"></i></button>
+        <button class="exp-ctrl" id="djSoundBtn" aria-label="Unmute video"><i class="fa-solid fa-volume-xmark"></i></button>
+        <button class="exp-ctrl" id="djFsBtn" aria-label="Fullscreen"><i class="fa-solid fa-expand"></i></button>
+      </div>
     </div>
 
     <div class="exp-split">
@@ -505,8 +513,13 @@
   var prevBtn = document.getElementById('deckPrev');
   var nextBtn = document.getElementById('deckNext');
   var cards = [];
+  var bodies = [];
   var LAST = PRODUCTS.length - 1;
   var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* flagship sits mid-deck so the fan opens symmetrically on load */
+  PRODUCTS.splice(2, 0, PRODUCTS.splice(0, 1)[0]);
+  var START = 2;
 
   PRODUCTS.forEach(function (p, i) {
     var card = document.createElement('article');
@@ -536,6 +549,7 @@
     });
     stage.appendChild(card);
     cards.push(card);
+    bodies.push(card.querySelector('.deck-card-body'));
 
     var dot = document.createElement('button');
     dot.className = 'deck-dot';
@@ -544,12 +558,12 @@
     dotsWrap.appendChild(dot);
   });
 
-  var pos = 0, target = 0, gap = 100, uiIndex = -1;
+  var pos = START, target = START, gap = 100, uiIndex = -1;
 
   function metrics() {
     var cw = cards[0].offsetWidth;
     // Heavy overlap = natural fanned hand; never wider than the stage allows
-    gap = Math.min(cw * 0.44, Math.max(64, (stage.clientWidth - cw) / 4.4));
+    gap = Math.min(cw * 0.42, Math.max(64, (stage.clientWidth - cw) / 4.6));
   }
 
   function render() {
@@ -557,15 +571,17 @@
       var off = i - pos;
       var abs = Math.abs(off);
       var x = off * gap;
-      var y = abs * abs * 6 + abs * 6;          // gentle arc
-      var rot = off * 4.5;                       // subtle tilt
-      var sc = Math.max(0.82, 1 - abs * 0.055);  // depth falloff
+      var y = abs * abs * 3 + abs * 4;           // gentle arc, no staircase
+      var rot = off * 3.5;                       // subtle tilt
+      var sc = Math.max(0.84, 1 - abs * 0.05);   // depth falloff
       var card = cards[i];
       card.style.transform = 'translate3d(' + x.toFixed(2) + 'px,' + y.toFixed(2) + 'px,0) rotate(' + rot.toFixed(2) + 'deg) scale(' + sc.toFixed(3) + ')';
       card.style.zIndex = String(100 - Math.round(abs * 10));
-      card.style.filter = 'brightness(' + Math.max(0.5, 1 - abs * 0.22).toFixed(3) + ')';
+      card.style.filter = 'brightness(' + Math.max(0.45, 1 - abs * 0.24).toFixed(3) + ')';
       card.style.opacity = abs > 2.4 ? String(Math.max(0.35, 1 - (abs - 2.4) * 0.5)) : '1';
       card.classList.toggle('is-active', abs < 0.5);
+      // back cards show only their visual — text fades in as a card comes forward
+      bodies[i].style.opacity = Math.max(0.1, Math.min(1, 1 - (abs - 0.35) * 0.9)).toFixed(3);
     }
     var idx = Math.round(target);
     if (idx !== uiIndex) {
@@ -728,16 +744,80 @@
     } else {
       video.play().catch(function () {});
     }
+    /* ── minimal auto-hiding controls: play/pause, sound, fullscreen ── */
+    var wrap = video.closest('.exp-video-wrap');
+    var ctrls = document.getElementById('djControls');
+    var playBtn = document.getElementById('djPlayBtn');
     var sBtn = document.getElementById('djSoundBtn');
-    var sIcon = document.getElementById('djSoundIcon');
-    var sText = document.getElementById('djSoundText');
-    sBtn.addEventListener('click', function () {
-      video.muted = !video.muted;
-      if (!video.muted) { video.play().catch(function () {}); }
-      sIcon.className = video.muted ? 'fa-solid fa-volume-xmark' : 'fa-solid fa-volume-high';
-      sText.textContent = video.muted ? 'Sound On' : 'Mute';
-      sBtn.setAttribute('aria-label', video.muted ? 'Unmute video' : 'Mute video');
+    var fsBtn = document.getElementById('djFsBtn');
+    var hideTimer = null;
+
+    function showControls() {
+      ctrls.classList.remove('faded');
+      clearTimeout(hideTimer);
+      // stay visible while paused; fade after 2.5s while playing
+      if (!video.paused) hideTimer = setTimeout(function () { ctrls.classList.add('faded'); }, 2500);
+    }
+    var fadedAtDown = false;
+    wrap.addEventListener('pointerdown', function () {
+      fadedAtDown = ctrls.classList.contains('faded');
+      showControls();
+    }, { passive: true });
+    wrap.addEventListener('pointermove', showControls, { passive: true });
+    wrap.addEventListener('mouseleave', function () {
+      if (!video.paused) { clearTimeout(hideTimer); ctrls.classList.add('faded'); }
     });
+
+    playBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      if (video.paused) video.play().catch(function () {}); else video.pause();
+      showControls();
+    });
+    video.addEventListener('play', function () {
+      playBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+      playBtn.setAttribute('aria-label', 'Pause video');
+      showControls();
+    });
+    video.addEventListener('pause', function () {
+      playBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
+      playBtn.setAttribute('aria-label', 'Play video');
+      ctrls.classList.remove('faded');
+      clearTimeout(hideTimer);
+    });
+
+    sBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      video.muted = !video.muted;
+      if (!video.muted) video.play().catch(function () {});
+      sBtn.innerHTML = video.muted ? '<i class="fa-solid fa-volume-xmark"></i>' : '<i class="fa-solid fa-volume-high"></i>';
+      sBtn.setAttribute('aria-label', video.muted ? 'Unmute video' : 'Mute video');
+      showControls();
+    });
+
+    fsBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      if (document.fullscreenElement) {
+        document.exitFullscreen();
+      } else if (wrap.requestFullscreen) {
+        wrap.requestFullscreen();
+      } else if (video.webkitEnterFullscreen) {
+        video.webkitEnterFullscreen(); // iOS Safari
+      }
+      showControls();
+    });
+    document.addEventListener('fullscreenchange', function () {
+      var on = document.fullscreenElement === wrap;
+      fsBtn.innerHTML = on ? '<i class="fa-solid fa-compress"></i>' : '<i class="fa-solid fa-expand"></i>';
+      fsBtn.setAttribute('aria-label', on ? 'Exit fullscreen' : 'Fullscreen');
+    });
+
+    /* tap the video itself to toggle the controls (mobile) */
+    video.addEventListener('click', function () {
+      if (fadedAtDown) { showControls(); }
+      else { clearTimeout(hideTimer); ctrls.classList.add('faded'); }
+    });
+
+    showControls();
   }
 })();
 </script>
