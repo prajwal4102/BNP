@@ -17,9 +17,12 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
+      - name: Show identity AWS sees
+        run: aws sts get-caller-identity
+
       - name: Sync files to S3
         run: |
-          aws s3 sync . s3://${{ secrets.S3_BUCKET }} \
+          aws s3 sync . s3://bnpgroup.in \
             --delete \
             --exclude ".git/*" \
             --exclude ".github/*"
