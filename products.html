@@ -617,7 +617,7 @@
   }
 
   /* animation loop: pos chases target with damping */
-  var EASE = reduceMotion ? 1 : 0.16;
+  var EASE = reduceMotion ? 1 : 0.12;
   (function tick() {
     var d = target - pos;
     if (Math.abs(d) > 0.0004) {
@@ -638,7 +638,8 @@
     else if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openModal(PRODUCTS[Math.round(target)]); }
   });
 
-  /* drag / swipe: 1:1 finger tracking, rubber-band past the ends, flick momentum */
+  /* drag / swipe: weighted finger tracking, rubber-band past the ends, gentle flick */
+  var DRAG_RESIST = 1.45; // >1 = heavier: more finger travel needed per card
   var down = false, dragged = false, startX = 0, startPos = 0, lastX = 0, lastT = 0, vx = 0;
   stage.addEventListener('pointerdown', function (e) {
     down = true; dragged = false;
@@ -650,7 +651,7 @@
     if (!down) return;
     var dx = e.clientX - startX;
     if (Math.abs(dx) > 8) dragged = true;
-    var raw = startPos - dx / gap;
+    var raw = startPos - dx / (gap * DRAG_RESIST);
     if (raw < 0) raw *= 0.32;                       // rubber band left
     else if (raw > LAST) raw = LAST + (raw - LAST) * 0.32; // rubber band right
     pos = raw; target = raw;
@@ -663,8 +664,9 @@
     if (!down) return;
     down = false;
     stage.classList.remove('grabbing');
-    var momentum = -vx * 110 / gap;                 // flick carries extra cards
-    momentum = Math.max(-2, Math.min(2, momentum));
+    // gentle flick: a clear, fast swipe carries at most one extra card
+    var momentum = Math.abs(vx) > 0.45 ? -vx * 45 / gap : 0;
+    momentum = Math.max(-1, Math.min(1, momentum));
     setTarget(Math.round(pos + momentum));
     setTimeout(function () { dragged = false; }, 60);
   });
@@ -683,7 +685,7 @@
     if (Math.abs(e.deltaX) < 12 || wheelLock) return;
     wheelLock = true;
     setTarget(Math.round(target) + (e.deltaX > 0 ? 1 : -1));
-    setTimeout(function () { wheelLock = false; }, 320);
+    setTimeout(function () { wheelLock = false; }, 450);
   }, { passive: false });
 
   metrics();
