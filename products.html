@@ -11,18 +11,18 @@
   </script>
   <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="color-scheme" content="dark"/>
-  <title>Event Experiences — BNP Group | Digital Jungle & Interactive Attractions</title>
-  <meta name="description" content="Interactive event experiences by BNP Group — the Digital Jungle where kids' drawings come alive on a giant LED wall, and more crowd-pulling attractions for kids' events, malls, carnivals, and brand activations across India." />
-  <meta name="keywords" content="interactive event experiences India, digital jungle event, kids event attraction, LED wall interactive experience, event engagement ideas, brand activation experiences, BNP Group" />
+  <title>Our Products — BNP Group | Digital Jungle & Interactive Event Attractions</title>
+  <meta name="description" content="Interactive event products by BNP Group — the Digital Jungle where kids' drawings come alive on a giant LED wall, and more crowd-pulling attractions for kids' events, malls, carnivals, and brand activations across India." />
+  <meta name="keywords" content="interactive event products India, digital jungle event, kids event attraction, LED wall interactive experience, event engagement ideas, brand activation experiences, BNP Group" />
   <link rel="canonical" href="https://www.bnpgroup.in/products.html" />
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="Event Experiences — BNP Group" />
+  <meta property="og:title" content="Our Products — BNP Group" />
   <meta property="og:description" content="Crowd-pulling interactive attractions for your event — like the Digital Jungle, where kids' drawings come alive on a giant LED wall." />
   <meta property="og:url" content="https://www.bnpgroup.in/products.html" />
   <meta property="og:image" content="https://www.bnpgroup.in/assets/digital-jungle-poster.jpg" />
   <meta property="og:site_name" content="BNP Group" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Event Experiences — BNP Group" />
+  <meta name="twitter:title" content="Our Products — BNP Group" />
   <meta name="twitter:description" content="Interactive attractions that make your event unforgettable — starting with the Digital Jungle." />
   <meta name="twitter:image" content="https://www.bnpgroup.in/assets/digital-jungle-poster.jpg" />
   <link rel="icon" type="image/png" href="logo.png"/>
@@ -35,12 +35,12 @@
         "@type": "BreadcrumbList",
         "itemListElement": [
           { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.bnpgroup.in/" },
-          { "@type": "ListItem", "position": 2, "name": "Experiences", "item": "https://www.bnpgroup.in/products.html" }
+          { "@type": "ListItem", "position": 2, "name": "Our Products", "item": "https://www.bnpgroup.in/products.html" }
         ]
       },
       {
         "@type": "Service",
-        "name": "Digital Jungle — Interactive Event Experience",
+        "name": "Digital Jungle — Interactive Event Attraction",
         "provider": { "@type": "Organization", "name": "BNP Group" },
         "description": "An interactive attraction for kids' and family events: children colour an animal on an iPad and watch it come alive inside a digital jungle on a giant LED wall. Fully managed setup including LED wall, iPads, software, and on-ground staff.",
         "areaServed": "India"
@@ -51,7 +51,116 @@
   <style>
     #preloader{position:fixed;inset:0;background:#0e0e0e;z-index:10000;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:2rem;transition:opacity 0.6s}#preloader img{width:80px;animation:pp 1.5s ease-in-out infinite}#pre-bar-wrap{width:180px;height:2px;background:rgba(255,255,255,0.08);overflow:hidden}#pre-bar{height:100%;background:linear-gradient(90deg,#C8A84B,#E8CC6A);animation:pb 1.8s ease forwards}@keyframes pp{0%,100%{opacity:.3;transform:scale(.95)}50%{opacity:1;transform:scale(1.05)}}@keyframes pb{to{width:100%}from{width:0}}
 
-    /* ── EXPERIENCES PAGE ── */
+    /* ── PRODUCTS PAGE ── */
+    .prod-hero { padding: 9rem 0 0; background: var(--dark); position: relative; overflow: hidden; }
+
+    /* ── CARD DECK ── */
+    .deck-section {
+      background: var(--dark);
+      padding: 3.5rem 0 5rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .deck-glow {
+      position: absolute; left: 50%; bottom: -30%;
+      width: 900px; height: 500px; transform: translateX(-50%);
+      background: radial-gradient(ellipse, rgba(212,175,55,0.09), transparent 65%);
+      pointer-events: none;
+    }
+    .deck-stage {
+      position: relative;
+      height: calc(var(--cw) * 1.5 + 70px);
+      touch-action: pan-y;
+      user-select: none;
+      -webkit-user-select: none;
+      outline: none;
+    }
+    .deck-section { --cw: clamp(230px, 24vw, 320px); }
+    .deck-card {
+      position: absolute; left: 50%; top: 20px;
+      width: var(--cw); aspect-ratio: 2 / 3;
+      margin-left: calc(var(--cw) / -2);
+      background: linear-gradient(165deg, #1c1c1c 0%, #101010 60%, #141414 100%);
+      border: 1px solid rgba(212,175,55,0.35);
+      border-radius: 18px;
+      padding: 12px;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.65);
+      transform-origin: 50% 130%;
+      transition: transform 0.55s var(--ease), filter 0.4s, box-shadow 0.4s;
+      cursor: pointer;
+      will-change: transform;
+    }
+    .deck-card.is-active {
+      box-shadow: 0 0 50px rgba(212,175,55,0.22), 0 28px 70px rgba(0,0,0,0.7);
+      border-color: rgba(212,175,55,0.65);
+    }
+    .deck-card:not(.is-active) { filter: brightness(0.55) saturate(0.85); }
+    .deck-frame {
+      height: 100%; border: 1px solid rgba(212,175,55,0.4); border-radius: 10px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center; gap: 1rem; padding: 1.6rem 1.2rem; position: relative;
+      background-image:
+        repeating-linear-gradient(45deg, rgba(212,175,55,0.045) 0 1.5px, transparent 1.5px 14px),
+        repeating-linear-gradient(-45deg, rgba(212,175,55,0.045) 0 1.5px, transparent 1.5px 14px);
+    }
+    .deck-frame::before, .deck-frame::after {
+      content: '◆ ◆ ◆'; position: absolute; left: 50%; transform: translateX(-50%);
+      font-size: 0.5rem; letter-spacing: 0.6em; color: rgba(212,175,55,0.5);
+    }
+    .deck-frame::before { top: 0.7rem; }
+    .deck-frame::after { bottom: 0.7rem; }
+    .deck-badge {
+      font-size: 0.52rem; font-weight: 800; letter-spacing: 0.22em; text-transform: uppercase;
+      border-radius: 100px; padding: 0.35rem 0.9rem;
+    }
+    .deck-badge.now { color: var(--black); background: linear-gradient(135deg, #C49010, #E8C040); }
+    .deck-badge.soon { color: var(--gold-bright); border: 1px solid var(--gold-border); background: rgba(212,175,55,0.06); }
+    .deck-card-icon {
+      width: 64px; height: 64px; border-radius: 16px; flex-shrink: 0;
+      background: rgba(212,175,55,0.1); border: 1px solid rgba(212,175,55,0.3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.6rem; color: #D4AF37;
+    }
+    .deck-card h3 {
+      font-family: var(--heading); font-size: 1.5rem; font-weight: 900;
+      text-transform: uppercase; color: var(--white); line-height: 1.05;
+    }
+    .deck-card p { font-size: 0.76rem; color: rgba(255,255,255,0.5); line-height: 1.65; }
+    .deck-card-more {
+      font-size: 0.6rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--gold-bright); display: inline-flex; align-items: center; gap: 0.4rem;
+      opacity: 0; transform: translateY(6px); transition: opacity 0.3s, transform 0.3s;
+    }
+    .deck-card.is-active .deck-card-more { opacity: 1; transform: translateY(0); }
+    .deck-controls {
+      display: flex; align-items: center; justify-content: center; gap: 1.6rem;
+      margin-top: 2.2rem; position: relative; z-index: 5;
+    }
+    .deck-arrow {
+      width: 52px; height: 52px; border-radius: 50%;
+      background: transparent; border: 1px solid var(--gold-border);
+      color: var(--gold-bright); font-size: 1.1rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.3s;
+    }
+    .deck-arrow:hover:not(:disabled) { background: var(--gold-bright); color: var(--black); border-color: var(--gold-bright); }
+    .deck-arrow:disabled { opacity: 0.25; cursor: default; }
+    .deck-dots { display: flex; gap: 0.55rem; }
+    .deck-dot {
+      width: 8px; height: 8px; border-radius: 50%; border: none; padding: 0; cursor: pointer;
+      background: rgba(255,255,255,0.18); transition: all 0.3s;
+    }
+    .deck-dot.on { background: var(--gold-bright); transform: scale(1.3); }
+    .deck-hint {
+      text-align: center; margin-top: 1.4rem;
+      font-size: 0.62rem; font-weight: 600; letter-spacing: 0.24em; text-transform: uppercase;
+      color: rgba(255,255,255,0.3);
+    }
+
+    /* ── PRODUCT MODAL EXTRAS (reuses proj-modal styles) ── */
+    .prod-modal-cta-row { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 2rem; }
+
+    /* ── FLAGSHIP ── */
     .exp-flagship { padding: 8rem 0; background: var(--black); }
     .exp-flag-badge {
       display: inline-flex; align-items: center; gap: 0.6rem;
@@ -87,18 +196,15 @@
       color: rgba(255,255,255,0.7); background: rgba(212,175,55,0.07);
       border: 1px solid rgba(212,175,55,0.2); border-radius: 100px; padding: 0.55rem 1.1rem;
     }
-    .exp-soon-card { position: relative; overflow: hidden; }
-    .exp-soon-badge {
-      position: absolute; top: 1.25rem; right: 1.25rem;
-      font-size: 0.55rem; font-weight: 800; letter-spacing: 0.2em; text-transform: uppercase;
-      color: var(--gold-bright); border: 1px solid var(--gold-border);
-      border-radius: 100px; padding: 0.35rem 0.9rem;
-      background: rgba(212,175,55,0.06);
-    }
     @media (max-width: 900px) {
       .exp-split { grid-template-columns: 1fr; gap: 3rem; }
       .exp-flagship { padding: 5rem 0; }
       .exp-video-wrap { margin: 2.5rem 0; }
+      .deck-section { --cw: clamp(200px, 56vw, 250px); }
+    }
+    @media (max-width: 540px) {
+      .prod-hero { padding-top: 8rem; }
+      .deck-arrow { width: 46px; height: 46px; }
     }
   </style>
 </head>
@@ -107,21 +213,35 @@
 <nav id="navbar"><div class="nav-inner">
   <a href="index.html" class="nav-logo"><img src="logo.png" alt="BNP Group"/></a>
 
-  <ul class="nav-links"><li><a href="index.html">Home</a></li><li><a href="about.html">About Us</a></li><li><a href="services.html">Services</a></li><li><a href="products.html" class="active">Experiences</a></li><li><a href="projects.html">Projects</a></li><li><a href="clients.html">Clients</a></li></ul>
+  <ul class="nav-links"><li><a href="index.html">Home</a></li><li><a href="about.html">About Us</a></li><li><a href="services.html">Services</a></li><li><a href="products.html" class="active">Our Products</a></li><li><a href="projects.html">Projects</a></li><li><a href="clients.html">Clients</a></li></ul>
   <a href="https://wa.me/919108690590?text=Hi%20BNP%20Group%2C%20I%20am%20interested%20in%20your%20services." class="nav-btn">Contact Us</a>
   <button class="hamburger" aria-label="Open navigation menu"><span></span><span></span><span></span></button>
 </div></nav>
-<div class="mobile-menu"><a href="index.html">Home</a><a href="about.html">About</a><a href="services.html">Services</a><a href="products.html">Experiences</a><a href="projects.html">Projects</a><a href="clients.html">Clients</a><a href="https://wa.me/919108690590?text=Hi%20BNP%20Group%2C%20I%20am%20interested%20in%20your%20services.">Contact</a></div>
+<div class="mobile-menu"><a href="index.html">Home</a><a href="about.html">About</a><a href="services.html">Services</a><a href="products.html">Our Products</a><a href="projects.html">Projects</a><a href="clients.html">Clients</a><a href="https://wa.me/919108690590?text=Hi%20BNP%20Group%2C%20I%20am%20interested%20in%20your%20services.">Contact</a></div>
 
 <main id="main-content">
 
 <!-- PAGE HERO -->
-<section class="page-hero">
-  <div class="page-hero-wm" aria-hidden="true">EXPERIENCES</div>
+<section class="page-hero prod-hero">
+  <div class="page-hero-wm" aria-hidden="true">PRODUCTS</div>
   <div class="container page-hero-content">
-    <div class="breadcrumb reveal"><a href="index.html">Home</a><span class="sep">›</span><span class="cur">Experiences</span></div>
-    <h1 class="page-title reveal reveal-delay-1">Event<br /><em>Experiences</em></h1>
-    <p class="page-sub reveal reveal-delay-2">Attractions your crowd queues up for, talks about, and remembers. Turnkey interactive experiences — we bring the technology, the setup, and the crew. You take the credit.</p>
+    <div class="breadcrumb reveal"><a href="index.html">Home</a><span class="sep">›</span><span class="cur">Our Products</span></div>
+    <h1 class="page-title reveal reveal-delay-1">Our<br /><em>Products</em></h1>
+    <p class="page-sub reveal reveal-delay-2">Interactive attractions your crowd queues up for, talks about, and remembers. Pick a card — every one is a turnkey experience we deliver, run, and pack up for you.</p>
+  </div>
+</section>
+
+<!-- CARD DECK -->
+<section class="deck-section">
+  <div class="deck-glow" aria-hidden="true"></div>
+  <div class="container">
+    <div class="deck-stage" id="deckStage" tabindex="0" role="group" aria-label="Product cards — use arrow keys or drag to browse, Enter to open details"></div>
+    <div class="deck-controls">
+      <button class="deck-arrow" id="deckPrev" aria-label="Previous product"><i class="fa-solid fa-arrow-left"></i></button>
+      <div class="deck-dots" id="deckDots"></div>
+      <button class="deck-arrow" id="deckNext" aria-label="Next product"><i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+    <p class="deck-hint">Drag · Arrows · Tap a card for details</p>
   </div>
 </section>
 
@@ -136,9 +256,9 @@
 </div></div>
 
 <!-- FLAGSHIP: DIGITAL JUNGLE -->
-<section class="exp-flagship">
+<section class="exp-flagship" id="digital-jungle">
   <div class="container">
-    <div class="exp-flag-badge reveal"><i class="fa-solid fa-star"></i> Flagship Experience</div>
+    <div class="exp-flag-badge reveal"><i class="fa-solid fa-star"></i> Flagship Product</div>
     <h2 class="big-heading reveal reveal-delay-1" style="font-size: clamp(3rem, 7vw, 6rem);">The Digital<br /><span class="italic">Jungle</span></h2>
     <p class="about-desc reveal reveal-delay-2" style="max-width: 640px; margin-top: 1.5rem;">A child colours an animal on an iPad. Seconds later, that exact animal walks, flies, or swims into a living digital jungle on a giant LED wall — with their name on it. Watch the video below, then picture it at your event.</p>
 
@@ -170,7 +290,7 @@
           <span class="exp-tag">Carnivals</span>
         </div>
         <div style="margin-top: 2.5rem; display: flex; gap: 1rem; flex-wrap: wrap;" class="reveal reveal-delay-3">
-          <a href="https://wa.me/919108690590?text=Hi%20BNP%20Group%2C%20I%27m%20interested%20in%20the%20Digital%20Jungle%20experience%20for%20my%20event." class="nav-btn" style="border-radius:100px; padding: 0.85rem 2.2rem; margin-right: 0;">Enquire About Digital Jungle</a>
+          <a href="https://wa.me/919108690590?text=Hi%20BNP%20Group%2C%20I%27m%20interested%20in%20the%20Digital%20Jungle%20for%20my%20event." class="nav-btn" style="border-radius:100px; padding: 0.85rem 2.2rem; margin-right: 0;">Enquire About Digital Jungle</a>
           <a href="tel:+919108690590" style="display:inline-flex;align-items:center;gap:0.5rem;font-size:0.78rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold-bright);border:1px solid var(--gold-border);border-radius:100px;padding:0.85rem 2.2rem;transition:all 0.3s;">Call Us</a>
         </div>
       </div>
@@ -195,13 +315,13 @@
   </div>
 </section>
 
-<!-- WHY EXPERIENCES -->
+<!-- WHY PRODUCTS -->
 <section class="capabilities" style="background: var(--dark);">
   <div class="container">
     <div class="cap-header">
       <div class="cap-header-left">
         <div class="section-label-sm reveal">The Event Manager's Math</div>
-        <h2 class="big-heading reveal reveal-delay-1">Why An<br /><span class="italic">Experience?</span></h2>
+        <h2 class="big-heading reveal reveal-delay-1">Why Add An<br /><span class="italic">Attraction?</span></h2>
       </div>
     </div>
     <div class="cap-grid">
@@ -218,41 +338,12 @@
       <div class="cap-card reveal reveal-delay-2">
         <span class="cap-icon"><i class="fa-solid fa-tags"></i></span>
         <h3>Sponsor Real Estate</h3>
-        <p style="font-size:0.82rem;color:rgba(255,255,255,0.46);line-height:1.75;">Logos inside the jungle, branded stations, themed animals — an experience gives sponsors placement that people actually look at.</p>
+        <p style="font-size:0.82rem;color:rgba(255,255,255,0.46);line-height:1.75;">Logos inside the jungle, branded stations, themed animals — an attraction gives sponsors placement that people actually look at.</p>
       </div>
       <div class="cap-card reveal reveal-delay-3">
         <span class="cap-icon"><i class="fa-solid fa-box-open"></i></span>
         <h3>Turnkey From BNP</h3>
         <p style="font-size:0.82rem;color:rgba(255,255,255,0.46);line-height:1.75;">LED wall, devices, software, power, and trained on-ground crew — delivered, operated, and packed up by one team you already trust.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- MORE EXPERIENCES -->
-<section class="industries" style="background: var(--black);">
-  <div class="container">
-    <div class="section-label-sm reveal">The Portfolio Is Growing</div>
-    <h2 class="big-heading reveal reveal-delay-1" style="margin-top: 1rem;">More Ways To<br /><span class="italic">Wow Your Crowd</span></h2>
-    <p class="about-desc reveal reveal-delay-2" style="max-width: 560px; margin-top: 1.5rem;">New interactive experiences are joining the line-up. Tell us about your event and audience — we'll match an experience to it, or build one around your theme.</p>
-    <div class="ind-grid">
-      <div class="ind-card exp-soon-card reveal">
-        <span class="exp-soon-badge">Launching Soon</span>
-        <span class="ind-icon"><i class="fa-solid fa-water"></i></span>
-        <h3>Digital Ocean</h3>
-        <p>The jungle, underwater — kids' sea creatures swim into a floor-to-ceiling animated ocean on the LED wall.</p>
-      </div>
-      <div class="ind-card exp-soon-card reveal reveal-delay-1">
-        <span class="exp-soon-badge">Launching Soon</span>
-        <span class="ind-icon"><i class="fa-solid fa-spray-can-sparkles"></i></span>
-        <h3>Digital Graffiti Wall</h3>
-        <p>Guests spray-paint virtual art onto a giant screen — zero mess, endless canvas, perfect for youth and brand events.</p>
-      </div>
-      <div class="ind-card exp-soon-card reveal reveal-delay-2">
-        <span class="exp-soon-badge">Launching Soon</span>
-        <span class="ind-icon"><i class="fa-solid fa-person-rays"></i></span>
-        <h3>Motion-Reactive Wall</h3>
-        <p>Visuals that ripple, bloom, and burst as people move in front of the screen — an attraction with no instructions needed.</p>
       </div>
     </div>
   </div>
@@ -265,7 +356,7 @@
     <div class="cta-band-inner reveal">
       <h2>MAKE IT<br /><em>MEMORABLE</em></h2>
       <div class="cta-btns">
-        <a href="https://wa.me/919108690590?text=Hi%20BNP%20Group%2C%20I%27m%20interested%20in%20your%20event%20experiences." class="btn-dark">Book An Experience</a>
+        <a href="https://wa.me/919108690590?text=Hi%20BNP%20Group%2C%20I%27m%20interested%20in%20your%20event%20products." class="btn-dark">Book A Product</a>
         <a href="services.html" class="btn-gold-outline">Our Services</a>
       </div>
     </div>
@@ -273,6 +364,18 @@
 </section>
 
 </main>
+
+<!-- PRODUCT DETAIL MODAL (reuses site modal styles) -->
+<div class="proj-modal-overlay" id="prodModal" role="dialog" aria-modal="true" aria-labelledby="prodModalTitle">
+  <div class="proj-modal-box">
+    <button class="proj-modal-close" id="prodModalClose" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+    <div class="proj-modal-tag" id="prodModalTag"></div>
+    <div class="proj-modal-title" id="prodModalTitle"></div>
+    <p class="proj-modal-desc" id="prodModalDesc"></p>
+    <div class="proj-modal-highlights" id="prodModalHl"></div>
+    <div class="prod-modal-cta-row" id="prodModalCta"></div>
+  </div>
+</div>
 
 <!-- FOOTER -->
 <footer>
@@ -284,7 +387,7 @@
       </div>
       <div class="footer-col"><h3>Quick Links</h3><ul>
         <li><a href="index.html">Home</a></li><li><a href="about.html">About Us</a></li>
-        <li><a href="services.html">Services</a></li><li><a href="products.html">Experiences</a></li>
+        <li><a href="services.html">Services</a></li><li><a href="products.html">Our Products</a></li>
         <li><a href="projects.html">Projects</a></li><li><a href="clients.html">Clients</a></li>
         <li><a href="https://wa.me/919108690590?text=Hi%20BNP%20Group%2C%20I%20am%20interested%20in%20your%20services.">Contact</a></li>
       </ul></div>
@@ -311,31 +414,236 @@
 
 <script src="js/main.js"></script>
 <script>
-  // Digital Jungle video: lazy autoplay when visible, pause when off-screen
-  (function () {
-    var video = document.getElementById('djVideo');
-    if (!video) return;
+(function () {
+  'use strict';
+
+  /* ══ PRODUCT DATA ══ */
+  var WA = 'https://wa.me/919108690590?text=';
+  var PRODUCTS = [
+    {
+      id: 'digital-jungle',
+      badge: 'Available Now', badgeCls: 'now',
+      icon: 'fa-solid fa-leaf',
+      title: 'Digital Jungle',
+      card: 'Kids colour an animal on an iPad — and it comes alive on a giant LED jungle wall.',
+      tag: 'Available Now — Flagship Product',
+      desc: 'The attraction that turns every child into a creator. Kids colour an animal at an iPad station, tap once, and watch their exact creation walk, fly, or swim into a living digital jungle on the LED wall — with their name on screen. Parents film it, kids talk about it, and your event becomes the one they remember.',
+      hl: ['Giant LED wall + iPad stations + software + crew — fully turnkey', 'Multiple stations in parallel keep the queue moving', 'Sponsor logos, branded sheets & custom animals', 'Runs continuously all day — no show timings'],
+      cta: [
+        { label: 'Watch It In Action', kind: 'video' },
+        { label: 'Enquire on WhatsApp', kind: 'wa', msg: "Hi BNP Group, I'm interested in the Digital Jungle for my event." }
+      ]
+    },
+    {
+      id: 'digital-ocean',
+      badge: 'Launching Soon', badgeCls: 'soon',
+      icon: 'fa-solid fa-water',
+      title: 'Digital Ocean',
+      card: 'The jungle, underwater — sea creatures swim into a floor-to-ceiling animated ocean.',
+      tag: 'Launching Soon',
+      desc: 'Everything families love about the Digital Jungle, reimagined underwater. Kids colour fish, turtles, whales and rays — then release them into a deep-blue animated ocean that fills the entire LED wall. Perfect for aquarium-themed events, summer campaigns, and beachside activations.',
+      hl: ['Same proven colour-and-release format kids already love', 'Calming, mesmerising visuals suit malls & premium venues', 'Custom sea creatures to match sponsor or event themes', 'Turnkey delivery by the BNP crew'],
+      cta: [{ label: 'Register Interest', kind: 'wa', msg: "Hi BNP Group, I'd like early access to the Digital Ocean experience." }]
+    },
+    {
+      id: 'graffiti-wall',
+      badge: 'Launching Soon', badgeCls: 'soon',
+      icon: 'fa-solid fa-spray-can-sparkles',
+      title: 'Digital Graffiti Wall',
+      card: 'Guests spray-paint virtual art onto a giant screen — zero mess, endless canvas.',
+      tag: 'Launching Soon',
+      desc: 'A digital spray can, a giant LED canvas, and zero cleanup. Guests tag, doodle, and paint in glowing strokes on the big screen — then snap their artwork or share it instantly. A magnet for teens, college crowds, and youth-brand activations where a kids attraction won\'t land.',
+      hl: ['Skews older — perfect for youth & brand events', 'Every artwork is shareable, with your event branding on it', 'No paint, no fumes, no venue damage', 'Works standalone or alongside a DJ / stage setup'],
+      cta: [{ label: 'Register Interest', kind: 'wa', msg: "Hi BNP Group, I'd like early access to the Digital Graffiti Wall." }]
+    },
+    {
+      id: 'motion-wall',
+      badge: 'Launching Soon', badgeCls: 'soon',
+      icon: 'fa-solid fa-person-rays',
+      title: 'Motion-Reactive Wall',
+      card: 'Visuals that ripple, bloom, and burst as people move in front of the screen.',
+      tag: 'Launching Soon',
+      desc: 'No iPads, no instructions — just walk past and the wall responds. Particles trail your hands, flowers bloom where you point, fireworks burst when you jump. The lowest-friction attraction there is: every single passer-by becomes a participant without even meaning to.',
+      hl: ['Zero learning curve — reacts to any movement instantly', 'Huge photo & reel potential at entrances and transitions', 'Visual themes matched to your event or brand', 'Great as an entrance moment or ambience piece'],
+      cta: [{ label: 'Register Interest', kind: 'wa', msg: "Hi BNP Group, I'd like early access to the Motion-Reactive Wall." }]
+    },
+    {
+      id: 'ar-photo',
+      badge: 'Launching Soon', badgeCls: 'soon',
+      icon: 'fa-solid fa-wand-magic-sparkles',
+      title: 'AR Photo Moments',
+      card: 'Guests pose with virtual characters and effects — and leave with a share-ready photo.',
+      tag: 'Launching Soon',
+      desc: 'A photo experience where the magic is added live: guests pose while augmented-reality characters, props, and effects appear beside them on screen. They walk away with a branded, share-ready photo or clip — and your event walks away with organic reach.',
+      hl: ['Instant branded photos & clips for every guest', 'Characters and effects themed to your event', 'High throughput — a photo moment every few seconds', 'Pairs perfectly with any other BNP attraction'],
+      cta: [{ label: 'Register Interest', kind: 'wa', msg: "Hi BNP Group, I'd like early access to AR Photo Moments." }]
+    }
+  ];
+
+  /* ══ DECK ══ */
+  var stage = document.getElementById('deckStage');
+  var dotsWrap = document.getElementById('deckDots');
+  var prevBtn = document.getElementById('deckPrev');
+  var nextBtn = document.getElementById('deckNext');
+  var active = 0;
+  var cards = [];
+
+  PRODUCTS.forEach(function (p, i) {
+    var card = document.createElement('article');
+    card.className = 'deck-card';
+    card.setAttribute('role', 'button');
+    card.setAttribute('aria-label', p.title + ' — open details');
+    card.innerHTML =
+      '<div class="deck-frame">' +
+        '<span class="deck-badge ' + p.badgeCls + '">' + p.badge + '</span>' +
+        '<span class="deck-card-icon"><i class="' + p.icon + '"></i></span>' +
+        '<h3>' + p.title + '</h3>' +
+        '<p>' + p.card + '</p>' +
+        '<span class="deck-card-more">Tap For Details <i class="fa-solid fa-arrow-right"></i></span>' +
+      '</div>';
+    card.addEventListener('click', function () {
+      if (dragged) return;
+      if (i === active) openModal(p); else setActive(i);
+    });
+    stage.appendChild(card);
+    cards.push(card);
+
+    var dot = document.createElement('button');
+    dot.className = 'deck-dot';
+    dot.setAttribute('aria-label', 'Go to ' + p.title);
+    dot.addEventListener('click', function () { setActive(i); });
+    dotsWrap.appendChild(dot);
+  });
+
+  function layout() {
+    var cw = cards[0].offsetWidth;
+    var gap = Math.max(56, Math.min(cw * 0.52, (stage.clientWidth - cw) / 3.2));
+    cards.forEach(function (card, i) {
+      var off = i - active;
+      var x = off * gap;
+      var y = Math.abs(off) * 16;
+      var rot = off * 6;
+      card.style.transform = 'translateX(' + x + 'px) translateY(' + y + 'px) rotate(' + rot + 'deg)';
+      card.style.zIndex = String(100 - Math.abs(off));
+      card.classList.toggle('is-active', off === 0);
+      card.setAttribute('aria-hidden', Math.abs(off) > 3 ? 'true' : 'false');
+    });
+    var dots = dotsWrap.children;
+    for (var d = 0; d < dots.length; d++) dots[d].classList.toggle('on', d === active);
+    prevBtn.disabled = active === 0;
+    nextBtn.disabled = active === PRODUCTS.length - 1;
+  }
+
+  function setActive(i) {
+    active = Math.max(0, Math.min(PRODUCTS.length - 1, i));
+    layout();
+  }
+
+  prevBtn.addEventListener('click', function () { setActive(active - 1); });
+  nextBtn.addEventListener('click', function () { setActive(active + 1); });
+  window.addEventListener('resize', layout);
+
+  stage.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowLeft') { e.preventDefault(); setActive(active - 1); }
+    else if (e.key === 'ArrowRight') { e.preventDefault(); setActive(active + 1); }
+    else if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openModal(PRODUCTS[active]); }
+  });
+
+  /* drag / swipe */
+  var startX = null, dragged = false;
+  stage.addEventListener('pointerdown', function (e) { startX = e.clientX; dragged = false; });
+  window.addEventListener('pointermove', function (e) {
+    if (startX === null) return;
+    if (Math.abs(e.clientX - startX) > 12) dragged = true;
+  });
+  window.addEventListener('pointerup', function (e) {
+    if (startX === null) return;
+    var dx = e.clientX - startX;
+    startX = null;
+    if (Math.abs(dx) > 50) setActive(active + (dx < 0 ? 1 : -1));
+    setTimeout(function () { dragged = false; }, 50);
+  });
+
+  /* horizontal trackpad scroll only — vertical wheel keeps scrolling the page */
+  var wheelLock = false;
+  stage.addEventListener('wheel', function (e) {
+    if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;
+    e.preventDefault();
+    if (Math.abs(e.deltaX) < 12 || wheelLock) return;
+    wheelLock = true;
+    setActive(active + (e.deltaX > 0 ? 1 : -1));
+    setTimeout(function () { wheelLock = false; }, 420);
+  }, { passive: false });
+
+  layout();
+
+  /* ══ MODAL ══ */
+  var modal = document.getElementById('prodModal');
+  var mTag = document.getElementById('prodModalTag');
+  var mTitle = document.getElementById('prodModalTitle');
+  var mDesc = document.getElementById('prodModalDesc');
+  var mHl = document.getElementById('prodModalHl');
+  var mCta = document.getElementById('prodModalCta');
+
+  function openModal(p) {
+    mTag.textContent = p.tag;
+    mTitle.textContent = p.title;
+    mDesc.textContent = p.desc;
+    mHl.innerHTML = p.hl.map(function (h) {
+      return '<div class="proj-highlight-item"><i class="fa-solid fa-check"></i>' + h + '</div>';
+    }).join('');
+    mCta.innerHTML = '';
+    p.cta.forEach(function (c) {
+      var a = document.createElement('a');
+      if (c.kind === 'video') {
+        a.href = '#digital-jungle';
+        a.addEventListener('click', function () { closeModal(); });
+      } else {
+        a.href = WA + encodeURIComponent(c.msg);
+        a.target = '_blank';
+        a.rel = 'noopener';
+      }
+      a.className = 'nav-btn';
+      a.style.cssText = 'border-radius:100px;padding:0.85rem 2rem;margin-right:0;display:inline-flex;';
+      a.textContent = c.label;
+      mCta.appendChild(a);
+    });
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal() {
+    modal.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  document.getElementById('prodModalClose').addEventListener('click', closeModal);
+  modal.addEventListener('click', function (e) { if (e.target === modal) closeModal(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && modal.classList.contains('open')) closeModal(); });
+
+  /* ══ VIDEO: lazy autoplay in view, pause off-screen ══ */
+  var video = document.getElementById('djVideo');
+  if (video) {
     if ('IntersectionObserver' in window) {
       new IntersectionObserver(function (entries) {
         entries.forEach(function (e) {
-          if (e.isIntersecting) { video.play().catch(function(){}); }
+          if (e.isIntersecting) { video.play().catch(function () {}); }
           else { video.pause(); }
         });
       }, { threshold: 0.35 }).observe(video);
     } else {
-      video.play().catch(function(){});
+      video.play().catch(function () {});
     }
-    var btn = document.getElementById('djSoundBtn');
-    var icon = document.getElementById('djSoundIcon');
-    var text = document.getElementById('djSoundText');
-    btn.addEventListener('click', function () {
+    var sBtn = document.getElementById('djSoundBtn');
+    var sIcon = document.getElementById('djSoundIcon');
+    var sText = document.getElementById('djSoundText');
+    sBtn.addEventListener('click', function () {
       video.muted = !video.muted;
-      if (!video.muted) { video.play().catch(function(){}); }
-      icon.className = video.muted ? 'fa-solid fa-volume-xmark' : 'fa-solid fa-volume-high';
-      text.textContent = video.muted ? 'Sound On' : 'Mute';
-      btn.setAttribute('aria-label', video.muted ? 'Unmute video' : 'Mute video');
+      if (!video.muted) { video.play().catch(function () {}); }
+      sIcon.className = video.muted ? 'fa-solid fa-volume-xmark' : 'fa-solid fa-volume-high';
+      sText.textContent = video.muted ? 'Sound On' : 'Mute';
+      sBtn.setAttribute('aria-label', video.muted ? 'Unmute video' : 'Mute video');
     });
-  })();
+  }
+})();
 </script>
 
 </body>
