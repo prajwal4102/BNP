@@ -91,7 +91,8 @@
       box-shadow: 0 24px 50px rgba(0,0,0,0.6);
       transform-origin: 50% 100%;
       cursor: pointer;
-      will-change: transform, filter, opacity;
+      will-change: transform, filter;
+      transition: box-shadow 0.45s, border-color 0.45s; /* glow fades, transform stays JS-driven */
     }
     .deck-card.is-active {
       box-shadow: 0 0 46px rgba(212,175,55,0.2), 0 28px 64px rgba(0,0,0,0.7);
@@ -169,7 +170,27 @@
     }
 
     /* ── PRODUCT MODAL EXTRAS (reuses proj-modal styles) ── */
-    .prod-modal-cta-row { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 2rem; }
+    .prod-modal-grid {
+      display: grid; grid-template-columns: 1fr 1.15fr;
+      gap: 2rem; align-items: start;
+    }
+    .prod-modal-media {
+      border-radius: 14px; overflow: hidden;
+      border: 1px solid var(--gold-border);
+      background: #0c0c0c;
+      position: sticky; top: 0;
+    }
+    .prod-modal-media video,
+    .prod-modal-media img { width: 100%; display: block; }
+    .prod-modal-media .deck-card-art {
+      aspect-ratio: 16 / 10; font-size: 3.4rem;
+    }
+    .proj-modal-desc { margin-bottom: 1.4rem; }
+    .prod-modal-cta-row { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1.6rem; }
+    @media (max-width: 700px) {
+      .prod-modal-grid { grid-template-columns: 1fr; gap: 1.4rem; }
+      .prod-modal-media { position: static; }
+    }
 
     /* ── FLAGSHIP ── */
     .exp-flagship { padding: 8rem 0; background: var(--black); }
@@ -388,11 +409,16 @@
 <div class="proj-modal-overlay" id="prodModal" role="dialog" aria-modal="true" aria-labelledby="prodModalTitle">
   <div class="proj-modal-box">
     <button class="proj-modal-close" id="prodModalClose" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
-    <div class="proj-modal-tag" id="prodModalTag"></div>
-    <div class="proj-modal-title" id="prodModalTitle"></div>
-    <p class="proj-modal-desc" id="prodModalDesc"></p>
-    <div class="proj-modal-highlights" id="prodModalHl"></div>
-    <div class="prod-modal-cta-row" id="prodModalCta"></div>
+    <div class="prod-modal-grid">
+      <div class="prod-modal-media" id="prodModalMedia"></div>
+      <div class="prod-modal-info">
+        <div class="proj-modal-tag" id="prodModalTag"></div>
+        <div class="proj-modal-title" id="prodModalTitle"></div>
+        <p class="proj-modal-desc" id="prodModalDesc"></p>
+        <div class="proj-modal-highlights" id="prodModalHl"></div>
+        <div class="prod-modal-cta-row" id="prodModalCta"></div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -451,7 +477,7 @@
       desc: 'The attraction that turns every child into a creator. Kids colour an animal at an iPad station, tap once, and watch their exact creation walk, fly, or swim into a living digital jungle on the LED wall — with their name on screen. Parents film it, kids talk about it, and your event becomes the one they remember.',
       hl: ['Giant LED wall + iPad stations + software + crew — fully turnkey', 'Multiple stations in parallel keep the queue moving', 'Sponsor logos, branded sheets & custom animals', 'Runs continuously all day — no show timings'],
       cta: [
-        { label: 'Watch It In Action', kind: 'video' },
+        { label: 'Know More', kind: 'video' },
         { label: 'Enquire on WhatsApp', kind: 'wa', msg: "Hi BNP Group, I'm interested in the Digital Jungle for my event." }
       ]
     },
@@ -558,27 +584,38 @@
     dotsWrap.appendChild(dot);
   });
 
-  var pos = START, target = START, gap = 100, uiIndex = -1;
+  var pos = START, target = START, gap = 100, cw = 280, uiIndex = -1;
 
   function metrics() {
-    var cw = cards[0].offsetWidth;
+    cw = cards[0].offsetWidth;
     // Heavy overlap = natural fanned hand; never wider than the stage allows
     gap = Math.min(cw * 0.42, Math.max(64, (stage.clientWidth - cw) / 4.6));
   }
 
+  /* While travelling between two slots, the deck "makes room": the two
+     crossing cards spread apart just enough to pass each other with no
+     overlap, then the fan closes. So the stacking swap happens while the
+     cards are separated — invisible at any speed, no card covers another. */
   function render() {
+    var frac = Math.abs(pos - Math.round(pos));            // 0 at rest → 0.5 mid-crossing
+    var open = Math.pow(Math.sin(Math.min(1, frac * 2) * Math.PI / 2), 1.5);
+    var spread = Math.max(0, cw - gap) * 0.55 * open;
     for (var i = 0; i < cards.length; i++) {
       var off = i - pos;
       var abs = Math.abs(off);
-      var x = off * gap;
+      var dir = off / (abs + 0.12);              // smooth sign: no jump near centre
+      // only the two cards actually passing each other step aside;
+      // the rest of the fan stays put
+      var near = Math.max(0, 1 - Math.abs(abs - 0.5) * 1.3);
+      var x = off * gap + dir * spread * near;
       var y = abs * abs * 3 + abs * 4;           // gentle arc, no staircase
       var rot = off * 3.5;                       // subtle tilt
       var sc = Math.max(0.84, 1 - abs * 0.05);   // depth falloff
+      var z = 100 - Math.round(abs * 10);
       var card = cards[i];
       card.style.transform = 'translate3d(' + x.toFixed(2) + 'px,' + y.toFixed(2) + 'px,0) rotate(' + rot.toFixed(2) + 'deg) scale(' + sc.toFixed(3) + ')';
-      card.style.zIndex = String(100 - Math.round(abs * 10));
-      card.style.filter = 'brightness(' + Math.max(0.45, 1 - abs * 0.24).toFixed(3) + ')';
-      card.style.opacity = abs > 2.4 ? String(Math.max(0.35, 1 - (abs - 2.4) * 0.5)) : '1';
+      card.style.zIndex = String(z);
+      card.style.filter = 'brightness(' + Math.max(0.5, 1 - abs * 0.22).toFixed(3) + ')';
       card.classList.toggle('is-active', abs < 0.5);
       // back cards show only their visual — text fades in as a card comes forward
       bodies[i].style.opacity = Math.max(0.1, Math.min(1, 1 - (abs - 0.35) * 0.9)).toFixed(3);
@@ -652,8 +689,13 @@
     var dx = e.clientX - startX;
     if (Math.abs(dx) > 8) dragged = true;
     var raw = startPos - dx / (gap * DRAG_RESIST);
-    if (raw < 0) raw *= 0.32;                       // rubber band left
-    else if (raw > LAST) raw = LAST + (raw - LAST) * 0.32; // rubber band right
+    // one card per swipe: resist beyond the adjacent slot…
+    var lo = Math.round(startPos) - 1, hi = Math.round(startPos) + 1;
+    if (raw > hi) raw = hi + (raw - hi) * 0.22;
+    else if (raw < lo) raw = lo + (raw - lo) * 0.22;
+    // …and rubber-band past the deck ends
+    if (raw < 0) raw *= 0.32;
+    else if (raw > LAST) raw = LAST + (raw - LAST) * 0.32;
     pos = raw; target = raw;
     var now = performance.now();
     var dt = now - lastT;
@@ -664,28 +706,31 @@
     if (!down) return;
     down = false;
     stage.classList.remove('grabbing');
-    // gentle flick: a clear, fast swipe carries at most one extra card
-    var momentum = Math.abs(vx) > 0.45 ? -vx * 45 / gap : 0;
-    momentum = Math.max(-1, Math.min(1, momentum));
-    setTarget(Math.round(pos + momentum));
+    // settle exactly one card in the swipe direction — or back where it started
+    var from = Math.round(startPos);
+    var moved = pos - startPos;
+    var step = 0;
+    if (Math.abs(moved) > 0.28) step = moved > 0 ? 1 : -1;      // dragged far enough
+    else if (Math.abs(vx) > 0.5) step = vx < 0 ? 1 : -1;        // or flicked clearly
+    setTarget(from + step);
     setTimeout(function () { dragged = false; }, 60);
   });
   window.addEventListener('pointercancel', function () {
     if (!down) return;
     down = false;
     stage.classList.remove('grabbing');
-    setTarget(Math.round(pos));
+    setTarget(Math.round(startPos));
   });
 
-  /* horizontal trackpad scroll only — vertical wheel keeps scrolling the page */
-  var wheelLock = false;
+  /* horizontal trackpad / wheel scroll: continuous scrub through the whole
+     deck, snapping to the nearest card when the scroll pauses */
+  var wheelSnap = null;
   stage.addEventListener('wheel', function (e) {
-    if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;
+    if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return; // vertical scroll stays with the page
     e.preventDefault();
-    if (Math.abs(e.deltaX) < 12 || wheelLock) return;
-    wheelLock = true;
-    setTarget(Math.round(target) + (e.deltaX > 0 ? 1 : -1));
-    setTimeout(function () { wheelLock = false; }, 450);
+    target = Math.max(0, Math.min(LAST, target + e.deltaX / (gap * 1.6)));
+    clearTimeout(wheelSnap);
+    wheelSnap = setTimeout(function () { target = Math.round(target); }, 150);
   }, { passive: false });
 
   metrics();
@@ -693,6 +738,7 @@
 
   /* ══ MODAL ══ */
   var modal = document.getElementById('prodModal');
+  var mMedia = document.getElementById('prodModalMedia');
   var mTag = document.getElementById('prodModalTag');
   var mTitle = document.getElementById('prodModalTitle');
   var mDesc = document.getElementById('prodModalDesc');
@@ -700,6 +746,15 @@
   var mCta = document.getElementById('prodModalCta');
 
   function openModal(p) {
+    if (p.video && !reduceMotion) {
+      mMedia.innerHTML = '<video autoplay muted loop playsinline poster="' + (p.img || '') + '"><source src="' + p.video + '" type="video/mp4" /></video>';
+    } else if (p.img) {
+      mMedia.innerHTML = '<img src="' + p.img + '" alt="' + p.title + '" />';
+    } else {
+      mMedia.innerHTML = '<div class="deck-card-art" style="--tint:' + p.tint + '"><i class="' + p.icon + '"></i></div>';
+    }
+    var mv = mMedia.querySelector('video');
+    if (mv) mv.play().catch(function () {});
     mTag.textContent = p.tag;
     mTitle.textContent = p.title;
     mDesc.textContent = p.desc;
@@ -726,6 +781,8 @@
     document.body.style.overflow = 'hidden';
   }
   function closeModal() {
+    var mv = mMedia.querySelector('video');
+    if (mv) mv.pause();
     modal.classList.remove('open');
     document.body.style.overflow = '';
   }
