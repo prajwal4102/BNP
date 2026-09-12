@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VAV Connect — Your next event gig starts here</title>
+  <meta name="description" content="VAV Connect matches event volunteers with organizers. Find event work near you, check in on shift days, and build a reliability score organizers trust.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* ── VΛV design tokens (mirrors the app's vav_tokens) ───────── */
+    :root {
+      --bg: #0A0612;
+      --bg-deep: #050308;
+      --surface-1: rgba(255,255,255,.04);
+      --surface-2: rgba(255,255,255,.07);
+      --border-1: rgba(255,255,255,.08);
+      --border-2: rgba(255,255,255,.14);
+      --text: #FAFAFA;
+      --text-2: rgba(255,255,255,.62);
+      --text-3: rgba(255,255,255,.42);
+      --text-4: rgba(255,255,255,.28);
+      --accent: #8B5CF6;
+      --accent-2: #A78BFA;
+      --accent-deep: #6D28D9;
+      --success: #34D399;
+      --r-md: 16px;
+      --r-lg: 20px;
+      --r-xl: 28px;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', -apple-system, "Segoe UI", Roboto, sans-serif;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── Violet orbs background ──────────────────────────────────── */
+    .orbs {
+      position: fixed; inset: 0; z-index: -1; pointer-events: none;
+      background:
+        radial-gradient(320px 320px at 18% 12%, rgba(139,92,246,.26), transparent 70%),
+        radial-gradient(380px 380px at 92% 45%, rgba(109,40,217,.22), transparent 70%),
+        radial-gradient(420px 420px at 50% 105%, rgba(139,92,246,.16), transparent 70%);
+    }
+
+    .wrap { max-width: 1060px; margin: 0 auto; padding: 0 24px; }
+
+    /* ── Nav ─────────────────────────────────────────────────────── */
+    nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 26px 0;
+    }
+    .logo {
+      font-weight: 800; font-size: 26px; letter-spacing: .04em;
+      display: inline-flex; align-items: baseline; gap: 1px;
+      text-decoration: none; color: var(--text);
+    }
+    .logo .lambda {
+      background: linear-gradient(180deg, var(--accent-2) 0%, var(--accent) 60%, var(--accent-deep) 100%);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .nav-links { display: flex; gap: 26px; align-items: center; }
+    .nav-links a {
+      color: var(--text-2); text-decoration: none; font-size: 14px; font-weight: 500;
+      transition: color .15s;
+    }
+    .nav-links a:hover { color: var(--text); }
+
+    /* ── Pills ───────────────────────────────────────────────────── */
+    .pill {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 7px 12px; border-radius: 99px;
+      background: var(--surface-1);
+      border: 1px solid rgba(167,139,250,.4);
+      font-size: 11px; font-weight: 600; letter-spacing: .12em;
+      text-transform: uppercase; color: var(--accent-2);
+    }
+    .pill .dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent-2); box-shadow: 0 0 6px var(--accent-2);
+    }
+    .pill.green { border-color: rgba(52,211,153,.4); color: var(--success); }
+    .pill.green .dot { background: var(--success); box-shadow: 0 0 6px var(--success); }
+
+    /* ── Hero ────────────────────────────────────────────────────── */
+    .hero { padding: 72px 0 88px; max-width: 720px; }
+    h1 {
+      margin: 20px 0 18px;
+      font-size: clamp(38px, 6.5vw, 60px);
+      line-height: 1.08; font-weight: 700; letter-spacing: -.03em;
+    }
+    h1 .hl {
+      background: linear-gradient(135deg, #fff 0%, var(--accent-2) 60%, var(--accent-deep) 100%);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .lede { color: var(--text-2); font-size: 17px; max-width: 540px; }
+
+    .cta-row { display: flex; gap: 16px; align-items: center; margin-top: 34px; flex-wrap: wrap; }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 17px 30px; border-radius: var(--r-lg);
+      background: linear-gradient(180deg, #A78BFA 0%, #8B5CF6 50%, #6D28D9 100%);
+      color: #fff; text-decoration: none; font-weight: 700; font-size: 15px;
+      box-shadow: 0 8px 24px -8px rgba(139,92,246,.55), 0 16px 60px -20px rgba(139,92,246,.4);
+      transition: transform .15s, box-shadow .15s;
+    }
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 28px -8px rgba(139,92,246,.7), 0 20px 70px -20px rgba(139,92,246,.5);
+    }
+    .btn-ghost {
+      display: inline-flex; align-items: center;
+      padding: 16px 26px; border-radius: var(--r-lg);
+      background: var(--surface-1); border: 1px solid var(--border-2);
+      color: var(--text); text-decoration: none; font-weight: 600; font-size: 15px;
+      transition: background .15s;
+    }
+    .btn-ghost:hover { background: var(--surface-2); }
+
+    /* ── Sections ────────────────────────────────────────────────── */
+    section { padding: 44px 0; }
+    .eyebrow {
+      font-size: 12px; font-weight: 700; letter-spacing: .14em;
+      text-transform: uppercase; color: var(--accent-2); margin-bottom: 12px;
+    }
+    h2 {
+      font-size: clamp(26px, 4vw, 34px); font-weight: 700;
+      letter-spacing: -.02em; line-height: 1.15; margin-bottom: 14px;
+    }
+    .sub { color: var(--text-2); max-width: 560px; font-size: 15.5px; }
+
+    /* ── Glass cards ─────────────────────────────────────────────── */
+    .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 36px; }
+    .card {
+      background: var(--surface-1);
+      border: 1px solid var(--border-1);
+      border-radius: var(--r-xl);
+      padding: 26px 24px;
+      transition: background .2s, border-color .2s;
+    }
+    .card:hover { background: var(--surface-2); border-color: var(--border-2); }
+    .card .icon {
+      width: 44px; height: 44px; border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--surface-2); border: 1px solid var(--border-2);
+      margin-bottom: 16px; font-size: 20px;
+    }
+    .card h3 { font-size: 16.5px; font-weight: 700; margin-bottom: 8px; letter-spacing: -.01em; }
+    .card p { color: var(--text-2); font-size: 14px; line-height: 1.55; }
+
+    /* ── Steps ───────────────────────────────────────────────────── */
+    .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin-top: 36px; }
+    .step {
+      background: var(--surface-1); border: 1px solid var(--border-1);
+      border-radius: var(--r-lg); padding: 22px 20px;
+    }
+    .step .num {
+      font-weight: 800; font-size: 13px; color: var(--accent-2);
+      letter-spacing: .1em; margin-bottom: 10px;
+    }
+    .step h4 { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+    .step p { color: var(--text-2); font-size: 13.5px; line-height: 1.5; }
+
+    /* ── Split (volunteers / organizers) ─────────────────────────── */
+    .split { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 36px; }
+    .panel {
+      background: var(--surface-1); border: 1px solid var(--border-1);
+      border-radius: var(--r-xl); padding: 30px 28px;
+    }
+    .panel ul { list-style: none; margin-top: 18px; display: grid; gap: 13px; }
+    .panel li { display: flex; gap: 12px; color: var(--text-2); font-size: 14.5px; }
+    .panel li::before {
+      content: '✓'; flex: none;
+      width: 22px; height: 22px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(139,92,246,.18); border: 1px solid rgba(167,139,250,.35);
+      color: var(--accent-2); font-size: 12px; font-weight: 700;
+    }
+    .panel h3 { font-size: 19px; font-weight: 700; letter-spacing: -.01em; margin-top: 14px; }
+
+    /* ── Bottom CTA ──────────────────────────────────────────────── */
+    .cta-band {
+      margin: 60px 0 20px;
+      background: linear-gradient(135deg, rgba(167,139,250,.14), rgba(139,92,246,.07));
+      border: 1px solid rgba(167,139,250,.28);
+      border-radius: var(--r-xl);
+      padding: 52px 40px; text-align: center;
+    }
+    .cta-band h2 { margin-bottom: 10px; }
+    .cta-band p { color: var(--text-2); margin-bottom: 28px; }
+
+    /* ── Footer ──────────────────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--border-1);
+      margin-top: 40px; padding: 34px 0 44px;
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 16px;
+    }
+    footer .fine { color: var(--text-4); font-size: 12.5px; }
+    footer .links { display: flex; gap: 22px; }
+    footer .links a { color: var(--text-3); font-size: 13px; text-decoration: none; }
+    footer .links a:hover { color: var(--text-2); }
+
+    @media (max-width: 860px) {
+      .grid, .steps { grid-template-columns: 1fr 1fr; }
+      .split { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 560px) {
+      .grid, .steps { grid-template-columns: 1fr; }
+      .hero { padding: 48px 0 64px; }
+      .nav-links { display: none; }
+      .cta-band { padding: 40px 24px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="orbs"></div>
+
+  <div class="wrap">
+    <nav>
+      <a class="logo" href="#">V<span class="lambda">Λ</span>V</a>
+      <div class="nav-links">
+        <a href="#volunteers">For volunteers</a>
+        <a href="#organizers">For organizers</a>
+        <a href="#how">How it works</a>
+        <a href="#get">Get the app</a>
+      </div>
+    </nav>
+
+    <!-- ── Hero ──────────────────────────────────────────────────── -->
+    <header class="hero">
+      <span class="pill"><span class="dot"></span>For event volunteers &amp; organizers</span>
+      <h1>Your next event gig<br>starts on <span class="hl">VAV.</span></h1>
+      <p class="lede">
+        VAV Connect matches people who want event work with organizers who
+        need reliable crews. Find shifts near you, check in on event days,
+        and build a track record that gets you invited back.
+      </p>
+      <div class="cta-row">
+        <a class="btn-primary" id="get" href="https://play.google.com/store/apps/details?id=com.vavconnect.app">
+          Get it on Google Play&nbsp;&nbsp;→
+        </a>
+        <a class="btn-ghost" href="#how">See how it works</a>
+      </div>
+    </header>
+
+    <!-- ── What is VAV ───────────────────────────────────────────── -->
+    <section>
+      <div class="eyebrow">What is VAV Connect?</div>
+      <h2>One app for event work,<br>from application to attendance.</h2>
+      <p class="sub">
+        Concerts, college fests, weddings, conferences, marathons — every
+        event needs hands, and finding trustworthy ones is hard. VAV Connect
+        is the bridge: volunteers discover paid and unpaid event gigs nearby,
+        organizers post shifts and pick from verified applicants, and
+        check-ins on the day keep both sides honest.
+      </p>
+
+      <div class="grid">
+        <div class="card">
+          <div class="icon">🧭</div>
+          <h3>Discover gigs nearby</h3>
+          <p>Browse events around your city and apply in one tap — no calls,
+             no middlemen, no group-chat chaos.</p>
+        </div>
+        <div class="card">
+          <div class="icon">✅</div>
+          <h3>Verified check-ins</h3>
+          <p>On shift day, check in at the venue with a photo and location.
+             Your hours are logged automatically — proof of work, built in.</p>
+        </div>
+        <div class="card">
+          <div class="icon">📈</div>
+          <h3>Reliability that pays off</h3>
+          <p>Every completed shift grows a reliability score organizers
+             trust, so the best workers get invited back first.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── For volunteers / organizers ───────────────────────────── -->
+    <section>
+      <div class="split">
+        <div class="panel" id="volunteers">
+          <span class="pill"><span class="dot"></span>For volunteers</span>
+          <h3>Turn free weekends into experience — and income.</h3>
+          <ul>
+            <li>Find event work near you that fits your schedule — perfect for students and anyone who wants flexible gigs.</li>
+            <li>Apply in one tap with a profile you build once.</li>
+            <li>Check in and out on shift days so every hour you work is on record.</li>
+            <li>Build a verified track record you can point to — your reliability score opens doors to bigger events.</li>
+          </ul>
+        </div>
+        <div class="panel" id="organizers">
+          <span class="pill green"><span class="dot"></span>For organizers</span>
+          <h3>Staff your event with people who actually show up.</h3>
+          <ul>
+            <li>Post an event and its shifts in minutes; applications come to you.</li>
+            <li>Pick your crew from profiles with verified histories and reliability scores.</li>
+            <li>See who's on site in real time — check-ins carry a photo, timestamp, and GPS location.</li>
+            <li>Get a clean attendance report per event: who came, when, and for how long.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── How it works ──────────────────────────────────────────── -->
+    <section id="how">
+      <div class="eyebrow">How it works</div>
+      <h2>Four steps from download to done.</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="num">01</div>
+          <h4>Sign in with Google</h4>
+          <p>One tap to join. Set up your profile as a volunteer or an organizer.</p>
+        </div>
+        <div class="step">
+          <div class="num">02</div>
+          <h4>Browse &amp; apply</h4>
+          <p>Volunteers apply to nearby events; organizers review and accept their crew.</p>
+        </div>
+        <div class="step">
+          <div class="num">03</div>
+          <h4>Check in on the day</h4>
+          <p>A photo check-in at the venue logs your time and confirms you're there.</p>
+        </div>
+        <div class="step">
+          <div class="num">04</div>
+          <h4>Grow your record</h4>
+          <p>Hours and completed shifts build a reputation both sides can rely on.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Bottom CTA ────────────────────────────────────────────── -->
+    <div class="cta-band">
+      <div class="eyebrow">Ready when you are</div>
+      <h2>Be part of the crew.</h2>
+      <p>Download VAV Connect and find your first event gig today.</p>
+      <a class="btn-primary" href="https://play.google.com/store/apps/details?id=com.vavconnect.app">
+        Get it on Google Play&nbsp;&nbsp;→
+      </a>
+    </div>
+
+    <footer>
+      <div>
+        <a class="logo" style="font-size:20px" href="#">V<span class="lambda">Λ</span>V</a>
+        <div class="fine">© 2026 VAV Connect · BNP Group</div>
+      </div>
+      <div class="links">
+        <a href="https://bnpgroup.in/privacy-policy.html">Privacy policy</a>
+        <a href="https://bnpgroup.in/delete-account.html">Delete account</a>
+        <a href="mailto:prajwal4102@gmail.com">Contact</a>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>
