@@ -101,7 +101,8 @@
       position: relative; height: 52%; flex-shrink: 0;
       background: #0c0c0c; overflow: hidden;
     }
-    .deck-card-img img {
+    .deck-card-img img,
+    .deck-card-img video {
       width: 100%; height: 100%; object-fit: cover; display: block;
       pointer-events: none;
     }
@@ -435,6 +436,7 @@
       badge: 'Available Now', badgeCls: 'now',
       icon: 'fa-solid fa-leaf',
       img: 'assets/digital-jungle-poster.jpg',
+      video: 'assets/digital-jungle-card.mp4',
       title: 'Digital Jungle',
       card: 'Kids colour an animal on an iPad — and it comes alive on a giant LED jungle wall.',
       tag: 'Available Now — Flagship Product',
@@ -511,9 +513,14 @@
     card.className = 'deck-card';
     card.setAttribute('role', 'button');
     card.setAttribute('aria-label', p.title + ' — open details');
-    var visual = p.img
-      ? '<img src="' + p.img + '" alt="" loading="lazy" draggable="false" />'
-      : '<div class="deck-card-art" style="--tint:' + p.tint + '"><i class="' + p.icon + '"></i></div>';
+    var visual;
+    if (p.video && !reduceMotion) {
+      visual = '<video muted loop playsinline preload="metadata" poster="' + (p.img || '') + '"><source src="' + p.video + '" type="video/mp4" /></video>';
+    } else if (p.img) {
+      visual = '<img src="' + p.img + '" alt="" loading="lazy" draggable="false" />';
+    } else {
+      visual = '<div class="deck-card-art" style="--tint:' + p.tint + '"><i class="' + p.icon + '"></i></div>';
+    }
     card.innerHTML =
       '<div class="deck-card-img">' + visual +
         '<span class="deck-badge ' + p.badgeCls + '">' + p.badge + '</span>' +
@@ -568,7 +575,25 @@
       prevBtn.disabled = idx === 0;
       nextBtn.disabled = idx === LAST;
       for (var c = 0; c < cards.length; c++) cards[c].setAttribute('aria-hidden', Math.abs(c - idx) > 3 ? 'true' : 'false');
+      syncCardVideos();
     }
+  }
+
+  /* card preview videos: only the front card's clip plays, and only while the deck is on screen */
+  var deckVisible = true;
+  function syncCardVideos() {
+    for (var i = 0; i < cards.length; i++) {
+      var v = cards[i].querySelector('video');
+      if (!v) continue;
+      if (deckVisible && i === uiIndex) { v.play().catch(function () {}); }
+      else { v.pause(); }
+    }
+  }
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function (entries) {
+      deckVisible = entries[0].isIntersecting;
+      syncCardVideos();
+    }, { threshold: 0.15 }).observe(stage);
   }
 
   function setTarget(i) {
